@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade Calculator</title>
+    <!-- Include Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-sXQ/Tc+HkA2qPcJIDFB2dszCz7YDWmdAqDShfQm7rODdoqORhQg/cv0Y2nrpWrf3b5gZZb6Y15CaeLwBCcz3OQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* General styling */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        /* Header styling */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: #333;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            z-index: 1000; /* Ensure header is above other content */
+        }
+
+        /* Main styling */
+        main {
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Footer styling */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        /* About section styling */
+        #about {
+            padding: 20px;
+            background-color: #fff;
+            margin-top: 20px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Form styling */
+        form {
+            margin-bottom: 20px;
+        }
+
+        /* Subject styling */
+        .subject {
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .subject:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Button styling */
+        .buttons {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Highlighting for required fields */
+        input:invalid:focus,
+        select:invalid:focus {
+            outline: none;
+        }
+
+        /* Delete button styling */
+        .delete-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        /* GPA result styling */
+        #gpaResult {
+            margin-top: 20px;
+            text-align: center;
+            display: none; /* Hide initially */
+        }
+
+        /* Responsive design */
+        @media only screen and (max-width: 600px) {
+            /* Adjust main padding for small screens */
+            main {
+                padding: 10px;
+            }
+
+            /* Adjust input width for small screens */
+            input[type="text"],
+            select {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>NITT GPA Calculator</h1>
+    </header>
+
+    <main>
+        <h2>Calculate GPA</h2>
+        <form id="gradeForm">
+            <div class="subject">
+                <label for="subjectNo">Subject No.</label>
+                <input type="text" name="subjectNo" value="1" readonly>
+                <label for="subjectName">Subject Name (optional)</label>
+                <input type="text" name="subjectName">
+                <label for="credits">Credits</label>
+                <input type="text" name="credits" pattern="\d*" placeholder="Ex: 4" required>
+                <label for="grade">Grade</label>
+                <select name="grade" required>
+                    <option value="">Select Grade</option>
+                    <option value="10">S</option>
+                    <option value="9">A</option>
+                    <option value="8">B</option>
+                    <option value="7">C</option>
+                    <option value="6">D</option>
+                    <option value="5">E</option>
+                    <option value="0">F</option>
+                </select>
+                <button type="button" class="delete-btn" onclick="deleteSubject(this)">Delete</button>
+            </div>
+            <div class="buttons">
+                <button type="button" onclick="addSubject()">Add Subject</button>
+                <button type="button" onclick="calculateGPA()">Calculate GPA</button>
+            </div>
+        </form>
+        <div id="gpaResult"></div>
+    </main>
+
+    <footer>
+    <p>Created by: Nimesh Kumar Nadar <a href="https://www.linkedin.com/in/nimeshkumarnadar" target="_blank" rel="noopener noreferrer">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="20" viewBox="0 0 15 15" fill="white" stroke="currentColor" stroke-width="0.3" stroke-linecap="round" stroke-linejoin="round" class="feather feather-linkedin">
+            <path d="M20,2H4C2.896,2,2,2.896,2,4v16c0,1.104,0.896,2,2,2h16c1.104,0,2-0.896,2-2V4C22,2.896,21.104,2,20,2z M8,18H5V10h3V18z M6.5,8.443c-1.301,0-2.357-1.056-2.357-2.357S5.199,3.729,6.5,3.729s2.357,1.056,2.357,2.357S7.801,8.443,6.5,8.443z M19,18h-3v-5.687c0-1.067-0.761-1.95-1.77-1.95c-0.499,0-0.949,0.21-1.273,0.551c-0.324,0.34-0.491,0.804-0.458,1.272V18h-3V10h2.941v1.174h0.039c0.405-0.634,1.129-1.033,1.931-1.033c1.361,0,2.466,1.104,2.466,2.466V18z"></path>
+        </svg>
+    </a></p>
+    
+</footer>
+
+    <section id="about">
+        <h2>How to use?</h2>
+        <p>NITT GPA Calculator can be used to calculate your gpa on a 10 pointer scale.</p>
+	<p>Add subject using the "Add Subject" button. <p>Enter subject name(optional), credits in numerics, and select your obtained grade.</p> <p>You can also delete a subject. </p><p>Calculate your gpa by clicking on the "Calculate gpa" button.</p>
+	<br><br><br><br>
+    </section>
+
+    <script>
+        // JavaScript functions for adding subjects and calculating GPA
+        function addSubject() {
+            const subjectDiv = document.createElement('div');
+            subjectDiv.classList.add('subject');
+
+            const subjectNo = document.querySelectorAll('.subject').length + 1;
+
+            subjectDiv.innerHTML = `
+                <label for="subjectNo">Subject No.</label>
+                <input type="text" name="subjectNo" value="${subjectNo}" readonly>
+                <label for="subjectName">Subject Name (optional)</label>
+                <input type="text" name="subjectName">
+                <label for="credits">Credits</label>
+                <input type="text" name="credits" pattern="\d*" placeholder="Ex: 4" required>
+                <label for="grade">Grade</label>
+                <select name="grade" required>
+                    <option value="">Select Grade</option>
+                    <option value="10">S</option>
+                    <option value="9">A</option>
+                    <option value="8">B</option>
+                    <option value="7">C</option>
+                    <option value="6">D</option>
+                    <option value="5">E</option>
+                    <option value="0">F</option>
+                </select>
+                <button type="button" class="delete-btn" onclick="deleteSubject(this)">Delete</button>
+            `;
+            
+            document.getElementById('gradeForm').insertBefore(subjectDiv, document.querySelector('.buttons'));
+        }
+
+        function calculateGPA() {
+            const subjects = document.querySelectorAll('.subject');
+            let totalCredits = 0;
+            let totalGradePoints = 0;
+            let anyEmpty = false;
+
+            subjects.forEach(subject => {
+                const credits = parseInt(subject.querySelector('input[name="credits"]').value);
+                const grade = parseInt(subject.querySelector('select[name="grade"]').value);
+                
+                if (!credits || !grade) {
+                    anyEmpty = true;
+                    subject.querySelector('input[name="credits"]').reportValidity();
+                    subject.querySelector('select[name="grade"]').reportValidity();
+                    return; // Exit forEach loop early
+                }
+
+                totalCredits += credits;
+                totalGradePoints += credits * grade;
+            });
+
+            if (anyEmpty) {
+                const gpaResult = document.getElementById('gpaResult');
+                gpaResult.innerHTML = `<p style="color: red;">Please fill in all required fields.</p>`;
+                gpaResult.style.display = 'block'; // Show the result message
+                return;
+            }
+
+            const gpa = totalGradePoints / totalCredits;
+            const gpaResult = document.getElementById('gpaResult');
+            gpaResult.innerHTML = `<p style="color: green;">Your GPA is:<b> ${gpa.toFixed(2)}</b></p>`;
+            gpaResult.style.display = 'block'; // Show the result message
+
+            // Scroll to the GPA result and center it on the screen
+            window.scrollTo({
+                top: gpaResult.offsetTop - window.innerHeight / 2,
+                behavior: 'smooth'
+            });
+        }
+
+        function deleteSubject(button) {
+            const subjectDiv = button.parentElement;
+            subjectDiv.remove();
+            // Reorder subject numbers
+            const subjectNos = document.querySelectorAll('input[name="subjectNo"]');
+            subjectNos.forEach((input, index) => {
+                input.value = index + 1;
+            });
+        }
+    </script>
+</body>
+</html>
